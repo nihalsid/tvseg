@@ -10,13 +10,7 @@
 
 #include "tvseg/util/errorhandling.h"
 
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wunused-function"
 #include "cuda_samples/common/inc/helper_cuda.h"
-#pragma clang diagnostic pop
-
-
-
 
 namespace tvseg {
 namespace cuda {

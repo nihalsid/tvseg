@@ -54,7 +54,7 @@ void TVSolverGPU::computeSolution(const cv::Mat dataterm, const cv::Mat weight, 
     cuda::SolverOutput output;
 
     try {
-        cuda::computeSolution((unsigned char*) segmentation.data,
+        tvseg::cuda::computeSolution((unsigned char*) segmentation.data,
                               (float*) u.data,
                               (const float*) dataterm.data,
                               (const float*) weight.data,
@@ -62,7 +62,7 @@ void TVSolverGPU::computeSolution(const cv::Mat dataterm, const cv::Mat weight, 
                               s()->params(),
                               feedback,
                               output);
-        LINFO << "Solver output: " << output;
+        std::cout << "Solver output: " << output.energyGap;
     } catch (Exception& e) {
         std::cerr << e.what() << std::endl;
         std::cerr << "solver failed" << std::endl;

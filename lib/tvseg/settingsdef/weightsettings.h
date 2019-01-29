@@ -6,9 +6,9 @@
 
 
 #define TVSEG_WEIGHT_SETTINGS_SEQ       \
-    (float, smoothingBandwidth, 0.8)    \
-    (float, beta, 1.0)                  \
-    (float, betaDepth, 1.0)             \
+    (float, smoothingBandwidth, 0.8f)    \
+    (float, beta, 1.0f)                  \
+    (float, betaDepth, 1.0f)             \
     (bool, useDepth, true)              \
     (bool, useColor, true)              \
     (bool, normalizeDepth, true)        \

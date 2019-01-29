@@ -379,8 +379,8 @@ void computeParzenDataterm(
 {
     // debugging info
     cout << "Begin: computeParzenDataterm" << endl;
-    cout << "\tdim: " << dim << endl;
-    cout << "\tparams: " << params << endl;
+    cout << "\tdim: " << dim.width << "," << dim.height << "," << dim.labels << endl;
+    cout << "\tparams: " << params.colorScale << "," << params.depthScale << "," << params.colorVariance << "," << params.depthVariance << "," << params.useColorKernel << "," << params.useDepthKernel << "," << params.fixScribblePixels << "," << params.useDistanceKernel << ","  << params.normalizeSpaceScale << "," << params.activeScribbleLambda << endl;
     cout << "\tscribble counts: ";
     for (int i = 0; i < dim.labels; ++i) {
         cout << numScribbles[i] << ", ";

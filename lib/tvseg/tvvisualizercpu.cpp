@@ -21,7 +21,7 @@ settings::SettingsPtr TVVisualizerCPU::settings() const
     return settings_;
 }
 
-void TVVisualizerCPU::computeVisualization(const cv::Mat segmentation, const cv::Mat groundTruth, const cv::Mat image, const cv::Mat labels, const int numLabels, const Feedback */*feedback*/)
+void TVVisualizerCPU::computeVisualization(const cv::Mat segmentation, const cv::Mat groundTruth, const cv::Mat image, const cv::Mat labels, const int numLabels, const Feedback* /*feedback*/)
 {
     // TODO: fix checks on input dimensions
 
@@ -31,7 +31,7 @@ void TVVisualizerCPU::computeVisualization(const cv::Mat segmentation, const cv:
     // sanity check
     if (segmentation.size != image.size)
     {
-        LERROR << "Dimensions do not match in computeVisualization";
+        std::cout << "Dimensions do not match in computeVisualization";
         return;
     }
 
@@ -41,7 +41,7 @@ void TVVisualizerCPU::computeVisualization(const cv::Mat segmentation, const cv:
     {
         // Initialize parameters
         int histSize = numLabels;    // bin size
-        float range[] = { 0, numLabels };
+        float range[] = { 0.f, (float) numLabels };
         const float *ranges[] = { range };
 
         // Calculate histogram

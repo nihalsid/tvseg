@@ -1,7 +1,7 @@
 #ifndef TVSEG_SETTINGS_MACRO_UTILS_H
 #define TVSEG_SETTINGS_MACRO_UTILS_H
 
-#include "boost/preprocessor/if.hpp"
+#include "boost/preprocessor/control/if.hpp"
 #include "boost/preprocessor/dec.hpp"
 #include "boost/preprocessor/seq/for_each.hpp"
 #include "boost/preprocessor/tuple/eat.hpp"

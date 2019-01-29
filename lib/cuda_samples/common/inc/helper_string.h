@@ -474,8 +474,8 @@ inline char *sdkFindFilePath(const char *filename, const char *executable_path)
             fclose(fp);
             // File found
             // returning an allocated array here for backwards compatibility reasons
-            char *file_path = (char *) malloc(path.length() + 1);
-            STRCPY(file_path, path.length() + 1, path.c_str());
+            char *file_path = (char *) malloc(path.length());
+            strcpy_s(file_path, path.length(), path.c_str());
             return file_path;
         }
 

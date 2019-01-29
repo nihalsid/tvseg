@@ -52,7 +52,7 @@ void ScribbleImageDisplayWidget::setLabels(cv::Mat labels)
 void ScribbleImageDisplayWidget::setLabels(QVector<QRgb> labelColors)
 {
     if (labelColors.size() > 255) {
-        LERROR << "ScribbleImageDisplayWidget only supports up to 255 labels. Cannot use " << labelColors.size() << " labels.";
+        std::cout << "ScribbleImageDisplayWidget only supports up to 255 labels. Cannot use " << labelColors.size() << " labels.";
         return;
     }
     labelColors_ = labelColors;
@@ -83,9 +83,11 @@ void ScribbleImageDisplayWidget::setScribbles(QVector<QVector<QPoint> > scribble
 {
     scribbleImage_.fill(noScribblePixelValue());
     for (int i = 0; i < numLabels(); ++i) {
-        foreach (QPoint p, scribbles[i]) {
-            if (p.x() < scribbleImage_.width() && p.y() < scribbleImage_.height()) {
-                scribbleImage_.setPixel(p, i);
+        if (i < scribbles.size()){
+            foreach (QPoint p, scribbles[i]) {
+                if (p.x() < scribbleImage_.width() && p.y() < scribbleImage_.height()) {
+                    scribbleImage_.setPixel(p, i);
+                }
             }
         }
     }
@@ -267,7 +269,7 @@ void ScribbleImageDisplayWidget::paintScribbles(QPixmap &dest)
 void ScribbleImageDisplayWidget::setScribblingLabel(int label)
 {
     scribblingLabel_ = label;
-    LDEBUG << "scribelling label " << scribblingLabel_+1;
+    std::cout  << "scribelling label " << scribblingLabel_+1;
 }
 
 int ScribbleImageDisplayWidget::numLabels()

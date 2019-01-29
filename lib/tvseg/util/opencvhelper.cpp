@@ -32,7 +32,7 @@ std::string matTypeToStr(int type) {
 cv::Mat mapLabels(cv::Mat labeling, std::vector<uint> mapping, unsigned int numLabels)
 {
     if (labeling.type() != CV_8UC1) {
-        LERROR << "Expected type CV_8UC1 for labelling, but got " << matTypeToStr(labeling.type());
+        std::cout << "Expected type CV_8UC1 for labelling, but got " << matTypeToStr(labeling.type());
         return cv::Mat();
     }
 
@@ -50,7 +50,7 @@ cv::Mat mapLabels(cv::Mat labeling, std::vector<uint> mapping, unsigned int numL
                 uint mapped = mapping[val];
                 if (mapped > 255) {
                     val = 255;
-                    LWARNING << "Trying to map to label > 255";
+                    std::cout << "Trying to map to label > 255";
                 } else {
                     val = (uchar) mapped;
                 }
@@ -119,7 +119,7 @@ cv::Mat flattenMultiRegionImage(const cv::Mat &src)
 
 cv::Mat createMat(const float *data, Dim3 dim)
 {
-    int dimSize[3] = {dim.labels, dim.height, dim.width};
+    int dimSize[3] = {(int)dim.labels, (int)dim.height, (int)dim.width};
     // FIXME: constness in opencv is not handled nicely unfortunately; find a better way than const_cast
     return cv::Mat(3, dimSize, CV_32FC1, const_cast<float*>(data));
 }
@@ -141,7 +141,7 @@ Dim3 matDim3(cv::Mat image)
         dim.labels = image.size[2];
         break;
     default:
-        LWARNING << "matDim3: Invalid image dimension " << image.dims;
+        std::cout << "matDim3: Invalid image dimension " << image.dims;
         break;
     }
 
@@ -151,11 +151,11 @@ Dim3 matDim3(cv::Mat image)
 float diceScore(cv::Mat prediction, cv::Mat groundTruth, uint label)
 {
     if (prediction.size != groundTruth.size) {
-        LERROR << "cannot compute dice score for images of unequal size";
+        std::cout << "cannot compute dice score for images of unequal size";
         return 1.0;
     }
     if (prediction.channels() != 1 || groundTruth.channels() != 1) {
-        LERROR << "expected single channel image for dice score";
+        std::cout << "expected single channel image for dice score";
         return 1.0;
     }
 

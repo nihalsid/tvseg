@@ -3,6 +3,15 @@
 
 #include "tvseg/util/logging.h"
 
+#include <algorithm>
+
+#ifdef max
+#undef max
+#endif
+#ifdef min
+#undef min
+#endif
+
 namespace tvseg {
 
 
@@ -46,7 +55,7 @@ QImage matToImage(cv::Mat const& src)
         format = QImage::Format_Indexed8;
         break;
     default:
-        LWARNING << "Conversion not implemented.";
+        std::cout << "Conversion not implemented.";
         return QImage();
     }
 

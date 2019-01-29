@@ -12,6 +12,7 @@
 
 #include <boost/filesystem.hpp>
 #include <boost/regex.hpp>
+#include <boost/bind.hpp>
 
 
 namespace {
@@ -145,7 +146,7 @@ void SegmentationImpl::saveResult()
             saveMetrics((outputFolder / metricsFilename).string(), computeMetrics());
         }
     } catch (const fs::filesystem_error& ex) {
-        LERROR << "Failed to save result with filesystem error: " << ex.what();
+        std::cout << "Failed to save result with filesystem error: " << ex.what();
     }
 }
 
@@ -179,12 +180,12 @@ void SegmentationImpl::loadSettings()
 {
     std::string filename = replaceString(inputSettings()->color(), inputSettings()->colorMatch(), inputSettings()->settingsReplace());
     if (fs::exists(filename)) {
-        LINFO << "Loading instance specific settings file '" << filename << "'.";
+        std::cout << "Loading instance specific settings file '" << filename << "'.";
         settings::BackendPtr backend(new settings::Backend());
         settings::SerializerQt serializer(backend, filename, true);
         copyAlgorithmicSettings(backend, settingsBackend_);
     } else {
-        LINFO << "Skipping to load non-exisitant instance specific settings file '" << filename << "'.";
+        std::cout << "Skipping to load non-exisitant instance specific settings file '" << filename << "'.";
     }
 }
 
@@ -280,7 +281,7 @@ void SegmentationImpl::loadInputGroundTruthLabelMapping()
     if (fs.good()) {
         inputGroundTruthLabelMapping_ = loadArray<uint>(fileName);
     } else {
-        LINFO << "Skipping to load non-exisitant label mapping file '" << fileName << "'.";
+        std::cout << "Skipping to load non-exisitant label mapping file '" << fileName << "'.";
         inputGroundTruthLabelMapping_.clear();
     }
 }
@@ -305,7 +306,7 @@ cv::Mat SegmentationImpl::labels() const
     const uint n = settings()->numLabels();
 
     if (n > MAX_LABELS) {
-        LERROR << "Trying to access more labels than available.";
+        std::cout << "Trying to access more labels than available.";
         return cv::Mat();
     }
 
@@ -326,11 +327,11 @@ void SegmentationImpl::loadScribbles()
 {
     Dim2 dim;
     if (!inputImageColorAvailable() && !inputImageDepthAvailable()) {
-        LERROR << "Cannot laod scribbles when no input image is loaded";
+        std::cout << "Cannot laod scribbles when no input image is loaded";
         return;
     }
     if (!labelsAvailable()) {
-        LERROR << "Cannot load scribbles when label colors are not available";
+        std::cout << "Cannot load scribbles when label colors are not available";
         return;
     }
     cv::Mat inputImage;
@@ -347,11 +348,11 @@ void SegmentationImpl::loadScribbles()
         if (fs::exists(tmp)) {
             filename = tmp;
         } else {
-            LINFO << "Skipping to load non-existent scribble image '" << filename << "'.";
+            std::cout << "Skipping to load non-existent scribble image '" << filename << "'.";
         }
     }
     if (!fs::exists(filename)) {
-        LINFO << "Skipping to load non-existent scribble image '" << filename << "'.";
+        std::cout << "Skipping to load non-existent scribble image '" << filename << "'.";
     } else {
         scribbles_.loadScribbleImage(filename, labels(), dim);
     }
@@ -378,15 +379,15 @@ void SegmentationImpl::computeKMeans()
     const int n = settings()->numLabels();
 
     if (!inputImageColorAvailable()) {
-        LDEBUGF("No image available; Cannot compute %d means", n);
+        printf("No image available; Cannot compute %d means", n);
         return;
     }
 
     kmeans()->computeMeans(inputImageColor(), n);
     if (kmeans()->maxNumMeans() >= n) {
-        LINFOF("Computed %d means successfully", n);
+        printf("Computed %d means successfully", n);
     } else {
-        LWARNINGF("Failed to compute %d means", n);
+        printf("Failed to compute %d means", n);
     }
 }
 
@@ -404,9 +405,9 @@ void SegmentationImpl::computeWeight()
 {
     tvweight()->computeWeight(inputImageColor(), inputImageDepth());
     if (tvweight()->weightAvailable()) {
-        LINFOF("Computed weight");
+        printf("Computed weight");
     } else {
-        LWARNINGF("Failed to compute weight.");
+        printf("Failed to compute weight.");
     }
 }
 
@@ -428,7 +429,7 @@ const CVAlgorithmInterface *SegmentationImpl::weightInterface() const
 void SegmentationImpl::computeDataterm()
 {
     if (!inputImageColorAvailable()) {
-        LDEBUGF("No image available. Cannot compute dataterm.");
+        printf("No image available. Cannot compute dataterm.");
         return;
     }
 
@@ -439,9 +440,9 @@ void SegmentationImpl::computeDataterm()
                                   settings()->numLabels(),
                                   feedback_.get());
     if (tvdataterm()->datatermAvailable()) {
-        LINFOF("Computed dataterm");
+        printf("Computed dataterm");
     } else {
-        LWARNINGF("Failed to compute dataterm.");
+        printf("Failed to compute dataterm.");
     }
 }
 
@@ -468,20 +469,20 @@ settings::SettingsPtr SegmentationImpl::solverSettings()
 void SegmentationImpl::computeSolution()
 {
     if (!datatermAvailable()) {
-        LDEBUGF("No dataterm available. Cannot compute solution.");
+        printf("No dataterm available. Cannot compute solution.");
         return;
     }
 
     if (!weightAvailable()) {
-        LDEBUGF("No weight available. Cannot compute solution.");
+        printf("No weight available. Cannot compute solution.");
         return;
     }
 
     tvsolver()->computeSolution(dataterm(), weight(), settings()->numLabels(), feedback_.get());
     if (tvsolver()->solutionAvailable()) {
-        LINFOF("Computed solution");
+        printf("Computed solution");
     } else {
-        LWARNINGF("Failed to compute solution.");
+        printf("Failed to compute solution.");
     }
 }
 
@@ -508,11 +509,11 @@ const CVAlgorithmInterface *SegmentationImpl::visualizerInterface() const
 std::vector<float> SegmentationImpl::computeMetrics() const
 {
     if (!solutionAvailable()) {
-        LERROR << "Solution not available to compute metrics";
+        std::cout << "Solution not available to compute metrics";
         return std::vector<float>();
     }
     if (!inputImageGroundTruthAvailable()) {
-        LERROR << "No ground truth available to compute metrics";
+        std::cout << "No ground truth available to compute metrics";
         return std::vector<float>();
     }
     return computeMetrics(solution(), inputImageGroundTruth(), settings()->numLabels());
@@ -521,25 +522,25 @@ std::vector<float> SegmentationImpl::computeMetrics() const
 void SegmentationImpl::computeVisualization()
 {
     if (!solutionAvailable()) {
-        LDEBUGF("No solution available. Cannot compute visualization.");
+        printf("No solution available. Cannot compute visualization.");
         return;
     }
 
     if (!inputImageColorAvailable()) {
-        LDEBUGF("No inputImageColor available. Cannot compute visualization.");
+        printf("No inputImageColor available. Cannot compute visualization.");
         return;
     }
 
     if (!labelsAvailable()) {
-        LDEBUGF("No labels available. Cannot compute visualization.");
+        printf("No labels available. Cannot compute visualization.");
         return;
     }
 
     tvvisualizer()->computeVisualization(solution(), inputImageGroundTruth(), inputImageColor(), labels(), settings()->numLabels(), feedback_.get());
     if (tvvisualizer()->visualizationAvailable()) {
-        LINFOF("Computed visualization");
+        printf("Computed visualization");
     } else {
-        LWARNINGF("Failed to compute visualization.");
+        printf("Failed to compute visualization.");
     }
 }
 
@@ -548,10 +549,10 @@ cv::Mat SegmentationImpl::loadImage(std::string filename) const
     cv::Mat input = cv::imread(filename, CV_LOAD_IMAGE_UNCHANGED);
 
     if (input.empty()) {
-        LWARNINGF("Cannot load image '%s'", filename.c_str());
+        printf("Cannot load image '%s'", filename.c_str());
     } else {
         std::string type = matTypeToStr(input.type());
-        LINFOF("Loaded image '%s' (%s %dx%d)", filename.c_str(), type.c_str(), input.cols, input.rows);
+        printf("Loaded image '%s' (%s %dx%d)", filename.c_str(), type.c_str(), input.cols, input.rows);
     }
 
     return input;
@@ -590,9 +591,9 @@ void SegmentationImpl::saveImage(std::string filename, cv::Mat image, bool norma
     }
     std::string type = matTypeToStr(image.type());
     if (cv::imwrite(filename, image)) {
-        LINFOF("Saved image '%s' (%s %dx%d)", filename.c_str(), type.c_str(), image.cols, image.rows);
+        printf("Saved image '%s' (%s %dx%d)", filename.c_str(), type.c_str(), image.cols, image.rows);
     } else {
-        LINFOF("Failed to save image '%s' (%s %dx%d)", filename.c_str(), type.c_str(), image.cols, image.rows);
+        printf("Failed to save image '%s' (%s %dx%d)", filename.c_str(), type.c_str(), image.cols, image.rows);
     }
 }
 
@@ -616,11 +617,11 @@ void SegmentationImpl::saveScribbleImage(std::string filename, const Scribbles &
 {
     Dim2 dim;
     if (!inputImageColorAvailable() && !inputImageDepthAvailable()) {
-        LERROR << "Cannot save scribbles when no input image is loaded";
+        std::cout << "Cannot save scribbles when no input image is loaded";
         return;
     }
     if (!labelsAvailable()) {
-        LERROR << "Cannot save scribbles when label colors are not available";
+        std::cout << "Cannot save scribbles when label colors are not available";
         return;
     }
     cv::Mat inputImage;

@@ -177,7 +177,7 @@ void AlgorithmWidget::addPreset(QString name)
 void AlgorithmWidget::computeButtonClicked(int id)
 {
     if (id < 0 || id >= actions_.size()) {
-        LWARNING << "Invalid action id " << id << ". Ignore button click.";
+        std::cout << "Invalid action id " << id << ". Ignore button click.";
         return;
     }
     runningAction_ = id;
@@ -188,7 +188,7 @@ void AlgorithmWidget::computeButtonClicked(int id)
 void AlgorithmWidget::clearButtonClicked(int id)
 {
     if (id < 0 || id >= actions_.size()) {
-        LWARNING << "Invalid action id " << id << ". Ignore button click.";
+        std::cout << "Invalid action id " << id << ". Ignore button click.";
         return;
     }
     actions_[id].clear();
@@ -200,7 +200,7 @@ void AlgorithmWidget::clearButtonClicked(int id)
 void AlgorithmWidget::showButtonClicked(int id)
 {
     if (id < 0 || id >= actions_.size()) {
-        LWARNING << "Invalid action id " << id << ". Ignore button click.";
+        std::cout << "Invalid action id " << id << ". Ignore button click.";
         return;
     }
 
@@ -212,7 +212,7 @@ void AlgorithmWidget::showButtonClicked(int id)
     } else {
         clearButtons_[id]->setEnabled(false);
         showButtons_[id]->setEnabled(false);
-        LWARNING << "Result for action '" << action.name << "' not available. Cannot display.";
+        std::cout << "Result for action '" << action.name << "' not available. Cannot display.";
     }
 }
 
@@ -221,7 +221,7 @@ void AlgorithmWidget::settingsValueChanged(QtProperty *property, QVariant /*valu
     if (property) {
         if (!propertyMap_.contains(property)) {
             if (!settingsInSetup_.contains(property->propertyName())) {
-                LWARNING << "AlgorithmWidget: Got valueChanged signal for unregistered property '" << property->propertyName() << "' with value '" << property->displayText() << "'";
+                std::cout << "AlgorithmWidget: Got valueChanged signal for unregistered property '" << property->propertyName().toStdString() << "' with value '" << property->displayText().toStdString() << "'";
             }
             return;
         }
@@ -229,7 +229,7 @@ void AlgorithmWidget::settingsValueChanged(QtProperty *property, QVariant /*valu
         const int algoId   = propertyMap_[property].first;
 
         if (0 > algoId || algoId >= algorithms_.size()) {
-            LWARNING << "AlgorithmWidget: Invalid algorithm id '" << algoId << "' registered for property '" << property->propertyName() << "' with value '" << property->displayText() << "'";
+            std::cout << "AlgorithmWidget: Invalid algorithm id '" << algoId << "' registered for property '" << property->propertyName().toStdString() << "' with value '" << property->displayText().toStdString() << "'";
             return;
         }
 
@@ -240,14 +240,14 @@ void AlgorithmWidget::settingsValueChanged(QtProperty *property, QVariant /*valu
             boost::any value = e->value();
             const bool* autoCompute = boost::any_cast<bool>(&value);
             if (!autoCompute) {
-                LWARNING << "AlgorithmWidget: autoRecompute setting not boolean.";
+                std::cout << "AlgorithmWidget: autoRecompute setting not boolean.";
                 return;
             }
             if (*autoCompute) {
                 const int actionId = propertyMap_[property].second;
 
                 if (actionId < 0 || actionId >= actions_.size()) {
-                    LWARNING << "AlgorithmWidget: Invalid action id " << actionId << ".";
+                    std::cout << "AlgorithmWidget: Invalid action id " << actionId << ".";
                     return;
                 }
 

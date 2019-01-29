@@ -16,7 +16,7 @@
 //#define _DISABLE_VERBOSE_LOGS
 
 #include "tvseg/3rdparty/easylogging++.h"
-
+#include <iostream>
 
 namespace boost {
 template<typename T> class shared_array;
@@ -47,11 +47,11 @@ std::string formatToString(const char* fmt, ...);
 
 //#define LINFO CINFO("trivial")
 
-#define LINFOF(...) LINFO << ::easyloggingpp::formatToString(__VA_ARGS__)
-#define LWARNINGF(...) LWARNING << ::easyloggingpp::formatToString(__VA_ARGS__)
-#define LDEBUGF(...) LDEBUG << ::easyloggingpp::formatToString(__VA_ARGS__)
-#define LERRORF(...) LERROR << ::easyloggingpp::formatToString(__VA_ARGS__)
-#define LFATALF(...) LFATAL << ::easyloggingpp::formatToString(__VA_ARGS__)
+#define LINFOF(...) std::cout << ::easyloggingpp::formatToString(__VA_ARGS__)
+#define LWARNINGF(...) std::cout << ::easyloggingpp::formatToString(__VA_ARGS__)
+#define LDEBUGF(...) std::cout << ::easyloggingpp::formatToString(__VA_ARGS__)
+#define LERRORF(...) std::cout << ::easyloggingpp::formatToString(__VA_ARGS__)
+#define LFATALF(...) std::cout << ::easyloggingpp::formatToString(__VA_ARGS__)
 
 
 #endif // TVSEG_UTIL_LOGGING_H

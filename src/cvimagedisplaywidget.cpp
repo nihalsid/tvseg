@@ -232,7 +232,7 @@ bool CvImageDisplayWidget::eventFilter(QObject *obj, QEvent *event)
 
         if (event->type() == QEvent::MouseButtonPress) {
             QMouseEvent *mouseEvent = static_cast<QMouseEvent *>(event);
-            LDEBUG << qPrintable(positionValueString(mouseEvent->pos()));
+            std::cout << qPrintable(positionValueString(mouseEvent->pos()));
             return true;
         }
 
@@ -272,7 +272,7 @@ QString CvImageDisplayWidget::positionValueString(QPoint widgetPos)
             }
             break;
         default:
-            LWARNING << "positionValueString: Image type not supported.";
+            std::cout << "positionValueString: Image type not supported.";
             break;
         }
     }

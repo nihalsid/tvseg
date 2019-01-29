@@ -29,12 +29,12 @@ void TVWeightEdge::computeWeight(cv::Mat color, cv::Mat depth)
 //    LDEBUG << "color type: " << matTypeToStr(color.type()) << ", depth type: " << matTypeToStr(depth.type());
 
     if (useColor && color.empty()) {
-        LWARNING << "No color image given for weight computation; not using color.";
+        LWARNINGF("No color image given for weight computation; not using color.");
         useColor = false;
     }
 
     if (useDepth && depth.empty()) {
-        LWARNING << "No depth image given for weight computation; not using depth.";
+        LWARNINGF("No depth image given for weight computation; not using depth.");
         useDepth = false;
     }
 

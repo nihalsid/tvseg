@@ -95,7 +95,7 @@ protected:
     EntryTypePtr addEntry(key_type name, EntryTypePtr defaultValueEntry)
     {
         if (hasName(name)) {
-            LWARNING << "Entry '" << name << "' already added to settings. Ignoring.";
+            std::cout << "Entry '" << name << "' already added to settings. Ignoring.";
             return defaultValueEntry;
         }
         key_type backendKey = Backend::concatNames(prefix(), name);

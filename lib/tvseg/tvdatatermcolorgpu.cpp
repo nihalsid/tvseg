@@ -17,7 +17,7 @@ void TVDatatermColorGPU::computeDataterm(
         const std::vector<float> &/*intrinsics*/,
         const Scribbles &/*scribbles*/,
         int numLabels,
-        const Feedback */*feedback*/)
+        const Feedback* /*feedback*/)
 {
     const int maxNumMeans = kmeans_->maxNumMeans();
     if (maxNumMeans < numLabels){

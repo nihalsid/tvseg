@@ -11,6 +11,7 @@
 #include "tvseg/util/helpers.h"
 #include "tvseg/settingsdef/parzensettings.h"
 #include "tvseg/settingsdef/weightsettings.h"
+#include "boost/bind.hpp"
 
 #include <QMessageBox>
 #include <QCloseEvent>
@@ -34,12 +35,12 @@ namespace _detail {
 
 void displayImageHelper(FeedbackWidget* w, const float* data, tvseg::Dim3 dim, std::string windowName) {
     if (!w) {
-        LWARNING << "displayImageHelper received NULL widget";
+        std::cout << "displayImageHelper received NULL widget";
         return;
     }
 
     if (!data) {
-        LWARNING << "displayImageHelper received NULL data";
+        std::cout << "displayImageHelper received NULL data";
         return;
     }
 
@@ -72,9 +73,6 @@ TVSegWindow::TVSegWindow(QWidget *parent, std::string settingsFilename) :
 {
     ui_->setupUi(this);
     addDockWidget(Qt::BottomDockWidgetArea, consoleDock_);
-
-    easyloggingpp::Loggers::getLogger("trivial")->registerDispatchCallback("gui_console",
-        boost::bind(&TVSegWindow::addConsoleMessageAsync, this, _1, _2));
 
     addDockWidget(Qt::RightDockWidgetArea, feedbackDock_);
     ui_->menuWindow->addAction(consoleDock_->toggleViewAction());
@@ -145,7 +143,6 @@ TVSegWindow::TVSegWindow(QWidget *parent, std::string settingsFilename) :
 
 TVSegWindow::~TVSegWindow()
 {
-    easyloggingpp::Loggers::getLogger("trivial")->unregisterDispatchCallback("gui_console");
     delete ui_;
 }
 
@@ -255,20 +252,19 @@ void TVSegWindow::initFromSettings()
 
 void TVSegWindow::addConsoleMessageAsync(uint level, const std::string &msg)
 {
-    using easyloggingpp::Level;
     QColor color;
     switch (level) {
-    case Level::Info:
+    case 128:
         color = QColor(11, 36, 251); // blue
         break;
-    case Level::Warning:
+    case 32:
         color = QColor(253, 164, 40); // orange
         break;
-    case Level::Debug:
+    case 4:
         color = QColor(15, 127, 18); // green
         break;
-    case Level::Error:
-    case Level::Fatal:
+    case 16:
+    case 8:
         color = QColor(252, 13, 27); // red
         break;
     default:
@@ -295,7 +291,7 @@ void TVSegWindow::on_saveSettingsButton_clicked()
     if (settingsSerializer_) {
         settingsSerializer_->save();
     } else {
-        LERROR << "No SettingsSerializer instantiated.";
+        std::cout << "No SettingsSerializer instantiated.";
     }
 }
 
@@ -425,7 +421,7 @@ void TVSegWindow::computeMetrics()
         for (uint i = 0; i < metrics.size(); ++i) {
             ss << metrics[i] << " ";
         }
-        LINFO << "Metrics: " << ss.str();
+        std::cout << "Metrics: " << ss.str();
     }
 }
 
@@ -556,10 +552,10 @@ void TVSegWindow::setPreset(QString name)
     } else if (name == "3d no distance") {
         set3dNoDistance(s_p, s_w);
     }  else {
-        LERROR << "unknown settings preset '" << name << "'";
+        std::cout << "unknown settings preset '" << name.toStdString() << "'";
         return;
     }
-    LINFO << "updated settings with preset '" << name << "'";
+    std::cout << "updated settings with preset '" << name.toStdString() << "'";
     solverWidget_->updateFromSettings();
 }
 

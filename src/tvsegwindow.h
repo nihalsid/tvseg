@@ -17,7 +17,7 @@
 #include "feedbackdockwidget.h"
 #include "feedbackwidget.h"
 #include "algorithmwidget.h"
-
+#include <QQueue>
 #include <QMainWindow>
 
 namespace tvseg_ui {

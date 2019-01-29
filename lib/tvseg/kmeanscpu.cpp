@@ -14,12 +14,12 @@ void KMeansCPU::computeMeans(const cv::Mat image, const int maxNumMeans)
     // todo: convert to stateless function return allmeans variable
 
     if (image.empty()) {
-        LWARNING << "Cannot comput means of empty image.";
+        std::cout << "Cannot comput means of empty image.";
         return;
     }
 
     if (maxNumMeans <= 0) {
-        LWARNING << "Should compute at least 1 mean, not %d.", maxNumMeans;
+        std::cout << "Should compute at least 1 mean, not %d.", maxNumMeans;
         return;
     }
 
@@ -114,7 +114,7 @@ void KMeansCPU::computeMeans(const cv::Mat image, const int maxNumMeans)
                 int s = clusterSize.at<int>(j);
                 if (s == 0) {
                     // should not happen since each cluster is initialized with one pixels value as its center
-                    LWARNING << "Empty cluster " << j << ". This should not occur.";
+                    std::cout << "Empty cluster " << j << ". This should not occur.";
                 } else {
                     allMeans_.at<cv::Vec3f>(k,j) = clusterCenter.at<cv::Vec3f>(j) / s;
                 }

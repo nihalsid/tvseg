@@ -36,16 +36,16 @@ void TVDatatermParzenGPU::computeDataterm(
         const Feedback *feedback)
 {
     if (scribbles.getNumLabels() != numLabels) {
-        LERROR << "passed scribbles for " << scribbles.getNumLabels() << " labels, but number of labels is " << numLabels;
+        std::cout << "passed scribbles for " << scribbles.getNumLabels() << " labels, but number of labels is " << numLabels;
         return;
     }
 
     if (intrinsics.size() != 9) {
-        LERROR << "Expected intrinsics of size 9, but got size " << intrinsics.size();
+        std::cout << "Expected intrinsics of size 9, but got size " << intrinsics.size();
         return;
     }
     if (intrinsics[1] != 0 || intrinsics[3] != 0 || intrinsics[6] != 0 || intrinsics[7] != 0 || intrinsics[8] != 1) {
-        LWARNING << "Intrinsics array index 1, 3, 6, 7, 8 are ignored.";
+        std::cout << "Intrinsics array index 1, 3, 6, 7, 8 are ignored.";
     }
 
     cuda::Intrinsics intr;

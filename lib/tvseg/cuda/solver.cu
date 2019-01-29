@@ -358,9 +358,9 @@ void computeSolution(
 
     cout << "Begin: computeSolution" << endl;
 
-    cout << "\tdim: " << dim << endl;
-    cout << "\tparams: " << params << endl;
+    cout << "\tdim: " << dim.width << "," << dim.height << "," << dim.labels << endl;
 
+    cout << "\tparams: " << params.lambda << "," << params.epsilon << "," << params.maxSteps << "," << params.minSteps << "," << params.autoRecompute << "," << params.displayIteration << "," << params.checkConverganceEvery << "," << params.displayIterationEvery << endl;
 
     ///////////////////////////////////////////////////////////////////////////
     /// 1) Prepare grid size

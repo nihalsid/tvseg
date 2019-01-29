@@ -22,7 +22,7 @@ void GradientCPU::computeEdges(const cv::Mat image, float smoothingBandwidth)
     }
 
     if (gray.type() != CV_32FC1) {
-        LWARNING << "Image type is not grayscale floating point which is assumed for gradient computation";
+        LWARNINGF("Image type is not grayscale floating point which is assumed for gradient computation");
         gradient_ = cv::Mat(); // computation failed;
         return;
     }

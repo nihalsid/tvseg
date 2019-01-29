@@ -25,7 +25,7 @@ bool checkDimensions(const cv::Mat image, const Dim3 specDim, const ImageSizeSpe
         imageDimBySpec.labels = 0;
         break;
     case ImageSizeSpec::Invalid:
-        LWARNING << "checkDimensions: Checking for Invalid ImageSizeSpec";
+        LWARNINGF("checkDimensions: Checking for Invalid ImageSizeSpec");
         break;
     default:
         NOT_REACHABLE();
@@ -34,8 +34,8 @@ bool checkDimensions(const cv::Mat image, const Dim3 specDim, const ImageSizeSpe
 
     const Dim3 imageDim = matDim3(image);
 
-    if (imageDim != imageDimBySpec) {
-        LERROR << "Expected image dim " << imageDimBySpec << " for image spec " << spec << " but got " << imageDim;
+    if (imageDim.width != imageDimBySpec.width && imageDim.height != imageDimBySpec.height && imageDim.labels != imageDimBySpec.labels) {
+        std::cout << "Expected image dim " << imageDimBySpec.width << " for image spec " << spec << " but got " << imageDim.width;
         return false;
     } else {
         return true;

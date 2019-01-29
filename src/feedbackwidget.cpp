@@ -5,7 +5,7 @@
 #include "cvimagedisplaywidget.h"
 
 #include "tvseg/util/logging.h"
-
+#include "QTabBar"
 
 Q_DECLARE_METATYPE(QSharedPointer<cv::Mat>)
 Q_DECLARE_METATYPE(QSharedPointer<QString>)

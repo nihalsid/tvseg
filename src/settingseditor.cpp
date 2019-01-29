@@ -10,7 +10,8 @@
 #include <boost/foreach.hpp>
 
 #include <QVBoxLayout>
-
+#undef max
+#undef min
 namespace tvseg_ui {
 
 
@@ -99,6 +100,15 @@ QPair<QVariant, AttributeList> anyToVariant(const boost::any &value)
         }
     }
 
+    // unsigned char
+
+    if (var.isNull()) {
+        const unsigned char* p = boost::any_cast<unsigned char>(&value);
+        if (p) {
+            var = *p;
+        }
+    }
+
     return QPair<QVariant, AttributeList>(var, attributes);
 }
 
@@ -111,7 +121,7 @@ bool variantAssignAny(boost::any &value, const QVariant &var)
             value = var.toBool();
             return true;
         } else {
-            LWARNING << "variantAssignAny: variant type '" << var.typeName() << "' cannot be assigned to bool value";
+            std::cout  << "variantAssignAny: variant type '" << var.typeName() << "' cannot be assigned to bool value";
             return false;
         }
     }
@@ -122,7 +132,7 @@ bool variantAssignAny(boost::any &value, const QVariant &var)
             value = var.toString().toStdString();
             return true;
         } else {
-            LWARNING << "variantAssignAny: variant type '" << var.typeName() << "' cannot be assigned to std::string value";
+            std::cout  << "variantAssignAny: variant type '" << var.typeName() << "' cannot be assigned to std::string value";
             return false;
         }
     }
@@ -133,7 +143,7 @@ bool variantAssignAny(boost::any &value, const QVariant &var)
             value = var.toDouble();
             return true;
         } else {
-            LWARNING << "variantAssignAny: variant type '" << var.typeName() << "' cannot be assigned to double value";
+            std::cout  << "variantAssignAny: variant type '" << var.typeName() << "' cannot be assigned to double value";
             return false;
         }
     }
@@ -144,7 +154,7 @@ bool variantAssignAny(boost::any &value, const QVariant &var)
             value = var.toInt();
             return true;
         } else {
-            LWARNING << "variantAssignAny: variant type '" << var.typeName() << "' cannot be assigned to int value";
+            std::cout  << "variantAssignAny: variant type '" << var.typeName() << "' cannot be assigned to int value";
             return false;
         }
     }
@@ -153,12 +163,12 @@ bool variantAssignAny(boost::any &value, const QVariant &var)
     if (boost::any_cast<unsigned int>(&value)) {
         if (var.type() == QVariant::Int) {
             if (var.toInt() < 0) {
-                LWARNING << "variantAssignAny: variant value " << var.toInt() << " for unsigned int is negative. Using 0.";
+                std::cout  << "variantAssignAny: variant value " << var.toInt() << " for unsigned int is negative. Using 0.";
             }
             value = static_cast<unsigned int>(std::max(0, var.toInt()));
             return true;
         } else {
-            LWARNING << "variantAssignAny: variant type '" << var.typeName() << "' cannot be assigned to unsigned int value";
+            std::cout  << "variantAssignAny: variant type '" << var.typeName() << "' cannot be assigned to unsigned int value";
             return false;
         }
     }
@@ -169,7 +179,7 @@ bool variantAssignAny(boost::any &value, const QVariant &var)
             value = static_cast<float>(var.toDouble());
             return true;
         } else {
-            LWARNING << "variantAssignAny: variant type '" << var.typeName() << "' cannot be assigned to float value";
+            std::cout  << "variantAssignAny: variant type '" << var.typeName() << "' cannot be assigned to float value";
             return false;
         }
     }
@@ -183,7 +193,7 @@ bool variantAssignAny(boost::any &value, const QVariant &var)
             value = tmp;
             return true;
         } else {
-            LWARNING << "variantAssignAny: variant type '" << var.typeName() << "' cannot be assigned to float_array_t value";
+            std::cout  << "variantAssignAny: variant type '" << var.typeName() << "' cannot be assigned to float_array_t value";
             return false;
         }
     }
@@ -197,7 +207,7 @@ bool variantAssignAny(boost::any &value, const QVariant &var)
             value = tmp;
             return true;
         } else {
-            LWARNING << "variantAssignAny: variant type '" << var.typeName() << "' cannot be assigned to uint_array_t value";
+            std::cout  << "variantAssignAny: variant type '" << var.typeName() << "' cannot be assigned to uint_array_t value";
             return false;
         }
     }
@@ -216,14 +226,14 @@ QtVariantProperty* createProperty(QtVariantPropertyManager* variantManager, Sett
 
     // not implemented
     if (var.isNull()) {
-        LWARNING << "Could not add property '" << name << "' of type '" << entry->value().type().name() << "' to editor. Conversion not implemented.";
+        std::cout  << "Could not add property '" << name.toStdString() << "' of type '" << entry->value().type().name() << "' to editor. Conversion not implemented.";
         return NULL;
     }
 
     QtVariantProperty* property = variantManager->addProperty(var.type(), name);
 
     if (!property) {
-        LWARNING << "Could not add property '" << name << "' of type '" << entry->value().type().name() << "' to editor. Not supported by PropertyBrowser.";
+        std::cout  << "Could not add property '" << name.toStdString() << "' of type '" << entry->value().type().name() << "' to editor. Not supported by PropertyBrowser.";
         return NULL;
     }
 
@@ -305,7 +315,7 @@ void SettingsEditor::updateFromEntry(QtVariantProperty *property, const EntryPtr
 
     // not implemented
     if (var.isNull()) {
-        LWARNING << "Could not update property '" << property->propertyName() << "' of type '" << entry->value().type().name() << "'. Conversion not implemented.";
+        std::cout  << "Could not update property '" << property->propertyName().toStdString() << "' of type '" << entry->value().type().name() << "'. Conversion not implemented.";
         return;
     }
 
@@ -325,10 +335,10 @@ void SettingsEditor::updateEntry(QtProperty *property, QVariant value)
     if (iter != callbackEntryMap_.end()) {
         boost::any oldValue = iter.value()->value();
         if (!variantAssignAny(oldValue, value)) {
-            LWARNING << "Cannot convert variant to any for setting'" << property->propertyName() << "'";
+            std::cout  << "Cannot convert variant to any for setting'" << property->propertyName().toStdString() << "'";
         } else {
             if (!iter.value()->setValue(oldValue)) {
-                LWARNING << "Cannot update entry from setting '" << property->propertyName() << "'";
+                std::cout  << "Cannot update entry from setting '" << property->propertyName().toStdString() << "'";
             }
         }
     }

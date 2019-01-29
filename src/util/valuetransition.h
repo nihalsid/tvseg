@@ -41,7 +41,7 @@ protected:
         if (arg.canConvert<V>()) {
             return (arg.value<V>() == value_);
         } else {
-            LWARNING << "Cannot convert signal argument type " << arg.typeName() << " to " << typeid(V).name();
+            std::cout << "Cannot convert signal argument type " << arg.typeName() << " to " << typeid(V).name();
             return false;
         }
     }
